@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScreenPass</title>
+    <link rel="stylesheet" href="book.css">
+</head>
+<body>
+    <header>
+        <h1>ScreenPass</h1>
+        <nav>
+            <a href="#movies">Movies</a>
+            <a href="#booking">Bookings</a>
+        </nav>
+    </header>
+
+    <section id="movies">
+        <h2>Available Movies</h2>
+        <div class="movie-list" id="movieList">
+            <!-- Movies will be dynamically inserted here using JavaScript -->
+        </div>
+    </section>
+
+    <section id="booking">
+        <h2>Book a Show</h2>
+        <form id="bookingForm">
+            <label for="movieName">Movie:</label>
+        <div class="button">
+                <select id="movieName">
+                <option value="" disabled selected>Select a movie</option>
+            </select>
+        </div>
+
+            <label for="seatCount">Number of Seats:</label>
+        <div class="button">
+            <input type="number" id="seatCount" min="1" max="10" required>
+        </div>
+            <label for="userName">Your Name:</label>
+        <div class="button">
+            <input type="text" id="userName" required>
+        </div>
+
+            <button type="submit">Book Now</button>
+        </form>
+        <div id="bookingResult"></div>
+    </section>
+
+    <script src="book.js"></script>
+</body>
+</html>

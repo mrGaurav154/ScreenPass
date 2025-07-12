@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20 px;
+}
+#booking{
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+header {
+    background-color: #a31818;
+    padding: 2rem;
+    text-align: center;
+    color: rgb(20, 18, 18);
+}
+
+header h1 {
+    margin-bottom: 0.5rem;
+    font-size: 50px;
+}
+
+nav a {
+    margin: 0 10px;
+    color: white;
+    text-decoration: none;
+}
+
+section {
+    padding: 2rem;
+}
+
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.movie-card {
+  background: #ffffff0d;
+  border-radius: 12px;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+.movie-img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+#bookingForm {
+    display: flex;
+    flex-direction : column;
+    gap : 15px;
+    width : 300px;
+
+    
+}
+
+#bookingForm label {
+    font-weight: bold;
+    
+}
+
+#bookingResult {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+.button{
+    padding: 10px 20px;
+    font-size: 18px;
+    color: white;
+    background-color: #ecefed;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button:hover {
+    background-color: rgb(38, 38, 44);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+label{
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.button select, .button input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button:hover {
+    background-color: #218838;
+}
