@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScreenPass Admin Login</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style2.css" />
+</head>
+<body class="gradient-bg">
+  <div class="container">
+    <div class="header">
+<h1 class="logo-glow">ScreenPass</h1>
+
+      <div class="underline"></div>
+      <h2>Admin Portal</h2>
+      <p class="subtitle">Secure access to movie booking management</p>
+    </div>
+
+    <div class="form-wrapper">
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <div class="input-icon">
+            <i class="ri-user-line"></i>
+            <input type="text" id="username" placeholder="admin" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-icon">
+            <i class="ri-lock-line"></i>
+            <input type="password" id="password" placeholder="Enter your password" required />
+            <button type="button" id="togglePassword"><i class="ri-eye-line"></i></button>
+          </div>
+        </div>
+
+        <div class="options">
+          <label><input type="checkbox" id="remember" /> Remember me</label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign In to Admin Panel</button>
+
+        <div class="security">
+          <p>Protected by enterprise-grade security</p>
+          <i class="ri-shield-check-line"></i>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer">
+      <p>© 2025 ScreenPass Entertainment. All rights reserved.</p>
+      <p>Unauthorized access is strictly prohibited</p>
+    </div>
+  </div>
+
+  <script src="script2.js"></script>
+</body>
+</html>

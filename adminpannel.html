@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="bg-gray-100">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <div class="sidebar bg-primary text-white">
+      <div class="p-4">
+        <h1 class="text-xl font-bold mb-10 mt-4 flex items-center">
+          <i class="fas fa-film mr-2"></i>
+          <span>Admin Panel</span>
+        </h1>
+        <ul class="space-y-2">
+          <li class="p-2 rounded hover:bg-primary-dark"><a href="#" class="flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+          <li class="p-2 rounded bg-primary-dark"><a href="#" class="flex items-center"><i class="fas fa-plus-circle mr-2"></i> Add Movies</a></li>
+          <li class="p-2 rounded hover:bg-primary-dark"><a href="#" class="flex items-center"><i class="fas fa-ticket-alt mr-2"></i> Bookings</a></li>
+          <li class="p-2 rounded hover:bg-primary-dark"><a href="#" class="flex items-center"><i class="fas fa-users mr-2"></i> Users</a></li>
+          <li class="p-2 rounded hover:bg-primary-dark mt-8"><a href="#" class="flex items-center text-red-300"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 overflow-y-auto">
+      <!-- Mobile Navigation -->
+      <div class="md:hidden bg-primary p-4 flex justify-between items-center">
+        <button id="sidebarToggle" class="text-white"><i class="fas fa-bars text-xl"></i></button>
+        <h1 class="font-['Pacifico'] text-white text-3xl  logo-glow mb-2 font-bold">Admin Panel</h1>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h2>
+
+        <!-- Add Movie Form -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-plus-circle text-primary mr-2"></i>
+            Add New Movie
+          </h3>
+          <form id="movieForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-gray-700 mb-2">Movie Name</label>
+                <input type="text" id="movieName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter movie name" required />
+              </div>
+              <div>
+                <label class="block text-gray-700 mb-2">Movie Image URL</label>
+                <input type="url" id="movieImage" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter image URL" required />
+              </div>
+              <div class="flex items-end">
+                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition flex items-center">
+                  <i class="fas fa-save mr-2"></i> Add Movie
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+              <i class="fas fa-ticket-alt text-primary mr-2"></i>
+              Recent Bookings
+            </h3>
+            <button id="refreshBookings" class="bg-gray-100 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200 transition flex items-center">
+              <i class="fas fa-sync-alt mr-2"></i> Refresh
+            </button>
+          </div>
+          <div class="table-container overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seats</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Movie</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200" id="bookingsTable">
+                <tr>
+                  <td colspan="6" class="text-center py-8 text-gray-500">
+                    Loading booking data...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    document.getElementById('movieForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const movieName = document.getElementById('movieName').value;
+      alert(`Movie "${movieName}" added successfully!`);
+      this.reset();
+    });
+
+    function loadBookings() {
+      fetch('/bookings')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('bookingsTable');
+          tbody.innerHTML = '';
+
+          if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No bookings found.</td></tr>';
+            return;
+          }
+
+          data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.id}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.username}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.seatCount}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.movieName}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.mobileNumber}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><button class="text-red-500 hover:text-red-700">Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    loadBookings();
+    document.getElementById('refreshBookings').addEventListener('click', loadBookings);
+  </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+/* Icon Override */
+:where([class^="ri-"])::before {
+  content: "\f3c2";
+}
+
+/* Background */
+body.gradient-bg {
+  background: linear-gradient(135deg, #000000 0%, #1A1A1A 50%, #2C1810 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-family: sans-serif;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 280px;
+  text-align: center;
+  color: #fff;
+}
+
+.logo-glow {
+  font-family: 'Pacifico', cursive !important;
+  font-size: 2.5rem;
+  color: #D32F2F !important;
+  text-shadow: 0 0 20px rgba(42, 40, 40, 0.5);
+  margin-bottom: 0.5rem;
+}
+
+/* Underline */
+.underline {
+  width: 4rem;
+  height: 2px;
+  background-color: #D32F2F;
+  margin: 0 auto 1rem;
+}
+
+/* Header */
+.header h2 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #ccc;
+}
+
+/* Glass Effect Box */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Labels */
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  color: #ddd;
+  margin-bottom: 0.5rem;
+}
+
+/* Inputs + Icons */
+.input-icon {
+  position: relative;
+}
+
+.input-icon i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #D32F2F;
+  pointer-events: none;
+}
+
+.input-icon input {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #444;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.input-icon input::placeholder {
+  color: #aaa;
+}
+
+.input-icon button {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.input-icon button:hover i {
+  color: #D32F2F;
+}
+
+/* Focus Effect */
+.input-focus:focus {
+  outline: none;
+  border-color: #D32F2F;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
+/* Remember / Forgot */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.options a {
+  color: #D32F2F;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.options a:hover {
+  color: #f44336;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 120%;
+  background-color: #D32F2F;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-hover:hover {
+  background-color: #B71C1C;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+}
+
+/* Checkbox */
+.checkbox-custom {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #666;
+  border-radius: 2px;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+}
+
+.checkbox-custom:checked {
+  background: #D32F2F;
+  border-color: #D32F2F;
+}
+
+.checkbox-custom:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 1px;
+  color: white;
+  font-size: 0.75rem;
+}
+
+/* Security Note */
+.security {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #bbb;
+  text-align: center;
+}
+
+.security i {
+  color: #D32F2F;
+  margin-top: 0.5rem;
+}
+
+/* Footer */
+.footer {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #888;
+  text-align: center;
+}
