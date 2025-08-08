@@ -2,136 +2,156 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const app = express();
+const PORT = 8080;
+const path = require('path');
+
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // ← this is important
+app.use(express.static('public'));
 
-// MySQL connection
+
+// ✅ MySQL Connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'zxcv1234',
-    database: 'screenpass'
+  host: 'localhost',
+  user: 'root',
+  password: 'zxcv1234', // Replace with your password if different
+  database: 'screenpass'
 });
 
-// Database setup function
+// ✅ Setup Tables if not exist
 function setupDatabase() {
-    const createUsersTable = `
-        CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL
-        )
-    `;
-    
-    const createBookingsTable = `
-        CREATE TABLE IF NOT EXISTS bookings (
-            username VARCHAR(255) NOT NULL,
-            seatCount INT,
-            movieName VARCHAR(255)
-        )
-    `;
+  const createBookingsTable = `
+    CREATE TABLE IF NOT EXISTS bookings (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL,
+      seatCount INT,
+      movieName VARCHAR(255),
+      mobileNumber VARCHAR(15)
+    )
+  `;
 
-    const createMoviesListTable = `
-        CREATE TABLE IF NOT EXISTS moviesList (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL
-        )
-    `;
+  const createMoviesListTable = `
+    CREATE TABLE IF NOT EXISTS moviesList (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL
+    )
+  `;
 
-    db.query(createUsersTable, (err) => {
+  const createAdminTable = `
+    CREATE TABLE IF NOT EXISTS admin (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL,
+      password VARCHAR(255) NOT NULL
+    )
+  `;
+
+  db.query(createBookingsTable, err => {
+    if (err) throw err;
+    console.log('✅ bookings table created or exists.');
+
+    db.query(createMoviesListTable, err => {
+      if (err) throw err;
+      console.log('✅ moviesList table created or exists.');
+
+      db.query('SELECT COUNT(*) AS count FROM moviesList', (err, result) => {
         if (err) throw err;
-        console.log('Users table created or already exists.');
-        
-        db.query(createBookingsTable, (err) => {
-            if (err) throw err;
-            console.log('Bookings table created or already exists.');
-            
-            db.query(createMoviesListTable, (err) => {
-                if (err) throw err;
-                console.log('MoviesList table created or already exists.');
-                
-                // Optionally, add sample movies if the table is empty
-                db.query('SELECT COUNT(*) as count FROM moviesList', (err, result) => {
-                    if (err) throw err;
-                    if (result[0].count === 0) {
-                        const sampleMovies = [
-                            'The Shawshank Redemption',
-                            'The Godfather',
-                            'The Dark Knight',
-                            '12 Angry Men',
-                            'Schindler',
-                        ];
-                        const insertMovies = 'INSERT INTO moviesList (name) VALUES ?';
-                        db.query(insertMovies, [sampleMovies.map(movie => [movie])], (err) => {
-                            if (err) throw err;
-                            console.log('Sample movies added to moviesList table.');
-                        });
-                    }
-                });
-            });
-        });
+        if (result[0].count === 0) {
+          const sampleMovies = [
+            'The Shawshank Redemption',
+            'The Godfather',
+            'The Dark Knight',
+            '12 Angry Men',
+            'Schindler\'s List'
+          ];
+          const insertMovies = 'INSERT INTO moviesList (name) VALUES ?';
+          db.query(insertMovies, [sampleMovies.map(name => [name])]);
+          console.log('✅ Sample movies inserted');
+        }
+      });
     });
+
+    db.query(createAdminTable, err => {
+      if (err) throw err;
+      console.log('✅ admin table created or exists.');
+      // Optional: Insert default admin if table empty
+      db.query('SELECT COUNT(*) AS count FROM admin', (err, result) => {
+        if (result[0].count === 0) {
+          db.query(
+            'INSERT INTO admin (username, password) VALUES (?, ?)',
+            ['admin', 'admin123']
+          );
+          console.log('✅ Default admin inserted');
+        }
+      });
+    });
+  });
 }
 
-// Connect to MySQL and setup database
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    console.log('MySQL connected...');
-    setupDatabase();
+db.connect(err => {
+  if (err) {
+    console.error('❌ MySQL connection failed:', err);
+    return;
+  }
+  console.log('✅ MySQL Connected');
+  setupDatabase();
 });
 
-// Fetch movies
+// ✅ Login Route
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  db.query(
+    'SELECT * FROM admin WHERE username = ? AND password = ?',
+    [username, password],
+    (err, results) => {
+      if (err) return res.status(500).json({ message: 'Server error' });
+
+      if (results.length > 0) {
+        res.json({ success: true, message: 'Login successful!' });
+      } else {
+        res.json({ success: false, message: 'Invalid username or password' });
+      }
+    }
+  );
+});
+
+// ✅ Get All Movies
 app.get('/movies', (req, res) => {
-    const sql = 'SELECT * FROM moviesList';
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error('Error fetching movies:', err);
-            res.status(500).json({ error: 'Error fetching movies' });
-            return;
-        }
-        res.json(result);
-    });
+  db.query('SELECT * FROM moviesList', (err, result) => {
+    if (err) return res.status(500).json({ error: 'Error fetching movies' });
+    res.json(result);
+  });
 });
 
-// Book a movie
+// ✅ Book a Ticket
 app.post('/book', (req, res) => {
-    console.log('Received booking request:', req.body);
-    const { userName, movieName, seatCount } = req.body;
-    
-    if (!userName || !movieName || !seatCount) {
-        console.error('Missing required fields:', { userName, movieName, seatCount });
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
+  const { username, seatCount, movieName, mobileNumber } = req.body;
+  if (!username || !seatCount || !movieName || !mobileNumber) {
+    return res.status(400).json({ error: 'Missing fields' });
+  }
 
-    const bookingSql = 'INSERT INTO bookings (username, seatCount, movieName) VALUES (?, ?, ?)';
-    db.query(bookingSql, [userName, seatCount, movieName], (err, bookingResult) => {
-        if (err) {
-            console.error('Error inserting booking:', err);
-            return res.status(500).json({ error: 'Error inserting booking', details: err.message });
-        }
-        
-        console.log('Booking inserted:', bookingResult);
-        res.json({ message: 'Booking successful!' });
-    });
+  const sql = 'INSERT INTO bookings (username, seatCount, movieName, mobileNumber) VALUES (?, ?, ?, ?)';
+  db.query(sql, [username, seatCount, movieName, mobileNumber], (err, result) => {
+    if (err) return res.status(500).json({ error: 'Booking failed', details: err.message });
+    res.json({ message: 'Booking successful!' });
+  });
 });
 
-// Fetch all bookings
+// ✅ Get All Bookings
 app.get('/bookings', (req, res) => {
-    const sql = 'SELECT * FROM bookings';
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error('Error fetching bookings:', err);
-            res.status(500).json({ error: 'Error fetching bookings' });
-            return;
-        }
-        res.json(result);
-    });
+  db.query('SELECT * FROM bookings', (err, result) => {
+    if (err) return res.status(500).json({ error: 'Error fetching bookings' });
+    res.json(result);
+  });
 });
 
-// Start the server
-app.listen(8080, () => {
-    console.log('Server running on port 8080');
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname,'public', 'book.html'));
+});
+
+// ✅ Start the Server
+app.listen(PORT,'0.0.0.0', () => {
+  console.log(`🚀 Server running at http://192.168.56.1:${8080}`);
 });
